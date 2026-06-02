@@ -1,412 +1,493 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nebula // terminal</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    /* ── Tokyo Night Dark palette ── */
-    :root {
-      --bg:        #1a1b26;
-      --bg-alt:    #16161e;
-      --bg-panel:  #1f2335;
-      --border:    #292e42;
-      --border-hl: #3b4261;
-      --comment:   #565f89;
-      --fg:        #a9b1d6;
-      --fg-dim:    #787c99;
-      --blue:      #7aa2f7;
-      --cyan:      #7dcfff;
-      --green:     #9ece6a;
-      --purple:    #bb9af7;
-      --red:       #f7768e;
-      --orange:    #ff9e64;
-      --yellow:    #e0af68;
-      --magenta:   #ad8ee6;
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>nebula</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+/* ── PALETTE ── */
+:root {
+  --bg:        #0d0d0d;
+  --surface:   #141414;
+  --surface2:  #1a1a1a;
+  --surface3:  #222222;
+  --border:    #2a2a2a;
+  --border2:   #383838;
+  --text:      #e0e0e0;
+  --text-dim:  #888;
+  --text-faint:#555;
+  --accent:    #e0e0e0;
+  --accent-hl: #ffffff;
+  --mono: 'JetBrains Mono', monospace;
+}
 
-      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-    }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.65;
+  min-height:100vh;
+}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── LAYOUT ── */
+.page{max-width:900px;margin:0 auto;padding:3rem 2rem 5rem}
 
-    html { scroll-behavior: smooth; }
+/* ── HEADER ── */
+.header{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:2.5rem;
+  align-items:start;
+  margin-bottom:3rem;
+  padding-bottom:2.5rem;
+  border-bottom:1px solid var(--border);
+}
+@media(max-width:600px){
+  .header{grid-template-columns:1fr;gap:1.5rem}
+  .photo-wrap{margin:0 auto}
+}
 
-    body {
-      background: var(--bg-alt);
-      color: var(--fg);
-      font-family: var(--font-mono);
-      font-size: 14px;
-      line-height: 1.6;
-      min-height: 100vh;
-      /* scanline texture */
-      background-image: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.03) 2px,
-        rgba(0,0,0,0.03) 4px
-      );
-    }
+/* Photo */
+.photo-wrap{
+  width:110px;height:110px;
+  border:1px solid var(--border2);
+  border-radius:4px;
+  overflow:hidden;
+  flex-shrink:0;
+  background:var(--surface2);
+  position:relative;
+}
+.photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+/* placeholder shown when no image */
+.photo-placeholder{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:.4rem;
+  color:var(--text-faint);
+  font-size:10px;
+  letter-spacing:.08em;
+  text-align:center;
+  padding:.5rem;
+}
+.photo-placeholder svg{opacity:.3}
 
-    /* ── Layout ── */
-    .shell {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
-    }
+/* Identity */
+.identity{display:flex;flex-direction:column;gap:.3rem;padding-top:.2rem}
+.ascii-name{
+  font-size:10px;
+  line-height:1.15;
+  color:var(--text-dim);
+  white-space:pre;
+  margin-bottom:.6rem;
+  overflow-x:auto;
+}
+/* EDIT: your full name */
+.fullname{font-size:1.45rem;font-weight:700;color:var(--accent-hl);letter-spacing:.02em}
+/* EDIT: your role/title */
+.role{font-size:12px;color:var(--text-dim);margin-bottom:.8rem}
 
-    /* ── Titlebar ── */
-    .titlebar {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-bottom: none;
-      padding: .45rem .9rem;
-      border-radius: 6px 6px 0 0;
-    }
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot-red    { background: var(--red); }
-    .dot-yellow { background: var(--yellow); }
-    .dot-green  { background: var(--green); }
-    .titlebar-label {
-      margin-left: auto;
-      font-size: 11px;
-      color: var(--comment);
-      letter-spacing: .08em;
-    }
+.contact-grid{
+  display:flex;flex-direction:column;gap:.25rem;
+}
+.contact-row{
+  display:flex;align-items:center;gap:.6rem;
+  font-size:11px;color:var(--text-dim);
+}
+.contact-row a{color:var(--text-dim);text-decoration:none;transition:color .15s}
+.contact-row a:hover{color:var(--text)}
+.c-label{color:var(--text-faint);min-width:56px}
 
-    /* ── Main terminal window ── */
-    .terminal {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-radius: 0 0 6px 6px;
-      padding: 2rem 2.5rem;
-      position: relative;
-    }
+/* ── SECTION HEADER ── */
+.section{margin-bottom:2.8rem}
+.sec-label{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--text-faint);
+  margin-bottom:1.2rem;
+  display:flex;align-items:center;gap:.8rem;
+}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-    /* ── ASCII art ── */
-    .ascii-wrap {
-      margin-bottom: 1.8rem;
-    }
-    .ascii {
-      font-size: 11px;
-      line-height: 1.2;
-      color: var(--blue);
-      white-space: pre;
-      /* EDIT: change color below for a different accent */
-      text-shadow: 0 0 18px rgba(122,162,247,.35);
-      overflow-x: auto;
-    }
+/* ── EXPERIENCE CARDS ── */
+.exp-list{display:flex;flex-direction:column;gap:.6rem}
+.exp-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:3px;
+  cursor:pointer;
+  transition:border-color .18s;
+}
+.exp-card:hover{border-color:var(--border2)}
+.exp-card.open{border-color:var(--border2)}
 
-    /* ── Prompt line ── */
-    .prompt-line {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      margin-bottom: .4rem;
-      flex-wrap: wrap;
-    }
-    .prompt-user  { color: var(--green); }
-    .prompt-at    { color: var(--comment); }
-    .prompt-host  { color: var(--blue); }
-    .prompt-sep   { color: var(--comment); }
-    .prompt-path  { color: var(--purple); }
-    .prompt-arrow { color: var(--cyan); }
+.exp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 1.1rem;
+  gap:1rem;
+}
+.exp-left{display:flex;flex-direction:column;gap:.15rem}
+.exp-role{font-size:13px;font-weight:600;color:var(--text)}
+.exp-org{font-size:11px;color:var(--text-dim)}
+.exp-right{display:flex;align-items:center;gap:1rem;flex-shrink:0}
+.exp-period{font-size:10px;color:var(--text-faint);white-space:nowrap}
+.exp-chevron{
+  color:var(--text-faint);
+  font-size:11px;
+  transition:transform .2s;
+  user-select:none;
+}
+.exp-card.open .exp-chevron{transform:rotate(180deg)}
 
-    /* ── Full name ── */
-    .fullname {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--fg);
-      letter-spacing: .04em;
-      margin-bottom: .3rem;
-      /* EDIT: replace with your actual name */
-    }
-    .fullname-sub {
-      font-size: 12px;
-      color: var(--comment);
-      margin-bottom: 2.2rem;
-      /* EDIT: tagline / role */
-    }
-    .cursor {
-      display: inline-block;
-      width: 9px; height: 1.1em;
-      background: var(--cyan);
-      vertical-align: middle;
-      animation: blink .9s step-end infinite;
-      margin-left: 3px;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
+.exp-body{
+  display:none;
+  padding:0 1.1rem 1.1rem;
+  border-top:1px solid var(--border);
+}
+.exp-card.open .exp-body{display:block;padding-top:1rem}
+.exp-desc{font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:.8rem}
+/* EDIT: add tags via .tag spans inside .exp-tags */
+.exp-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+.tag{
+  font-size:10px;letter-spacing:.07em;
+  border:1px solid var(--border2);
+  color:var(--text-faint);
+  padding:.15rem .55rem;
+  border-radius:2px;
+}
+/* images inside experience */
+.exp-images{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:.6rem;margin-top:.9rem;
+}
+.exp-images img{
+  width:100%;border-radius:2px;
+  border:1px solid var(--border);
+  object-fit:cover;
+  max-height:140px;
+}
 
-    /* ── Divider ── */
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 1.8rem 0;
-    }
-    .divider-label {
-      font-size: 11px;
-      color: var(--comment);
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-    .divider-label::before { content: '── '; color: var(--border-hl); }
-    .divider-label::after  { content: ' ──'; color: var(--border-hl); }
+/* ── FOOTER NAV ── */
+.footer-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;
+  padding-top:2rem;
+  border-top:1px solid var(--border);
+}
+.footer-note{font-size:11px;color:var(--text-faint)}
 
-    /* ── Sections grid ── */
-    .sections-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.4rem;
-    }
-    @media (max-width: 580px) { .sections-grid { grid-template-columns: 1fr; } }
-
-    /* ── Panel card ── */
-    .panel {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1.2rem 1.4rem;
-      transition: border-color .2s;
-    }
-    .panel:hover { border-color: var(--border-hl); }
-    .panel-title {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-    .panel-title.blue   { color: var(--blue); }
-    .panel-title.purple { color: var(--purple); }
-    .panel-title.cyan   { color: var(--cyan); }
-    .panel-title.green  { color: var(--green); }
-
-    /* ── Experience list ── */
-    .exp-item {
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px dashed var(--border);
-    }
-    .exp-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-    .exp-role {
-      color: var(--cyan);
-      font-weight: 500;
-      font-size: 13px;
-      /* EDIT */
-    }
-    .exp-org {
-      color: var(--comment);
-      font-size: 12px;
-      margin-bottom: .3rem;
-      /* EDIT */
-    }
-    .exp-desc {
-      color: var(--fg-dim);
-      font-size: 12px;
-      line-height: 1.5;
-      /* EDIT */
-    }
-
-    /* ── Services list ── */
-    .service-item {
-      display: flex;
-      align-items: flex-start;
-      gap: .6rem;
-      margin-bottom: .75rem;
-      font-size: 12px;
-    }
-    .service-item:last-child { margin-bottom: 0; }
-    .svc-icon { color: var(--green); flex-shrink: 0; }
-    .svc-label { color: var(--fg); font-weight: 500; }
-    .svc-desc  { color: var(--fg-dim); font-size: 11px; }
-
-    /* ── Footer / Projects button ── */
-    .footer-row {
-      margin-top: 2.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .status-line {
-      font-size: 11px;
-      color: var(--comment);
-      /* EDIT: status blurb */
-    }
-    .status-line .online { color: var(--green); }
-
-    .btn-projects {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      background: transparent;
-      border: 1px solid var(--blue);
-      color: var(--blue);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: .08em;
-      padding: .5rem 1.1rem;
-      border-radius: 3px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background .15s, color .15s, box-shadow .15s;
-    }
-    .btn-projects:hover {
-      background: var(--blue);
-      color: var(--bg-alt);
-      box-shadow: 0 0 16px rgba(122,162,247,.3);
-    }
-    .btn-projects::before { content: '$ '; opacity: .6; }
-    .btn-projects::after  { content: ' →'; }
-
-    /* ── Glow bar at top ── */
-    .glow-bar {
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--blue), var(--purple), var(--cyan), transparent);
-      border-radius: 99px;
-      margin-bottom: 2rem;
-      opacity: .6;
-    }
-  </style>
+.btn{
+  display:inline-flex;align-items:center;gap:.45rem;
+  font-family:var(--mono);
+  font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:.55rem 1.2rem;
+  border-radius:3px;
+  border:1px solid var(--border2);
+  background:var(--surface2);
+  color:var(--text);
+  text-decoration:none;
+  cursor:pointer;
+  transition:background .15s,border-color .15s,color .15s;
+}
+.btn:hover{background:var(--surface3);border-color:var(--text-faint)}
+</style>
 </head>
 <body>
-<div class="shell">
+<div class="page">
 
-  <!-- Window chrome -->
-  <div class="titlebar">
-    <span class="dot dot-red"></span>
-    <span class="dot dot-yellow"></span>
-    <span class="dot dot-green"></span>
-    <!-- EDIT: window title -->
-    <span class="titlebar-label">nebula@localhost ~ zsh</span>
+  <!-- ══ HEADER ══ -->
+  <div class="header">
+
+    <!-- PHOTO: replace src with your image path, e.g. src="photo.jpg" -->
+    <div class="photo-wrap">
+      <img id="profile-img" src="" alt="Profile photo" style="display:none">
+      <div class="photo-placeholder" id="photo-ph">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+        <span>add photo.jpg</span>
+      </div>
+    </div>
+
+    <div class="identity">
+      <!-- ASCII art — swap for any generator output, keep the pre tag -->
+      <pre class="ascii-name">
+ _ __   ___| |__  _   _| | __ _
+| '_ \ / _ \ '_ \| | | | |/ _` |
+| | | |  __/ |_) | |_| | | (_| |
+|_| |_|\___|_.__/ \__,_|_|\__,_|</pre>
+
+      <!-- EDIT: your name -->
+      <div class="fullname">Your Full Name</div>
+      <!-- EDIT: your title/role -->
+      <div class="role">Robotics Programmer · Linux Systems · A/V Technician</div>
+
+      <div class="contact-grid">
+        <!-- EDIT: fill in your contact details. Remove rows you don't want. -->
+        <div class="contact-row">
+          <span class="c-label">email</span>
+          <a href="mailto:you@example.com">you@example.com</a>
+        </div>
+        <div class="contact-row">
+          <span class="c-label">github</span>
+          <a href="https://github.com/nebula762814" target="_blank">github.com/nebula762814</a>
+        </div>
+        <div class="contact-row">
+          <span class="c-label">location</span>
+          <span>Bonners Ferry, ID</span>
+        </div>
+        <div class="contact-row">
+          <span class="c-label">linkedin</span>
+          <a href="#" target="_blank">linkedin.com/in/yourname</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="terminal">
-    <div class="glow-bar"></div>
+  <!-- ══ EXPERIENCE ══ -->
+  <div class="section">
+    <div class="sec-label">experience</div>
+    <div class="exp-list">
 
-    <!-- ASCII Art -->
-    <div class="ascii-wrap">
-      <pre class="ascii">
- ███╗   ██╗███████╗██████╗ ██╗   ██╗██╗      █████╗
- ████╗  ██║██╔════╝██╔══██╗██║   ██║██║     ██╔══██╗
- ██╔██╗ ██║█████╗  ██████╔╝██║   ██║██║     ███████║
- ██║╚██╗██║██╔══╝  ██╔══██╗██║   ██║██║     ██╔══██║
- ██║ ╚████║███████╗██████╔╝╚██████╔╝███████╗██║  ██║
- ╚═╝  ╚═══╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝
-      </pre>
-    </div>
+      <!--
+        ── HOW TO ADD AN EXPERIENCE ENTRY ──
+        Copy one .exp-card block. Fill in:
+          data-role   → job title (used in header)
+          data-org    → organization
+          data-period → date range
+          .exp-desc   → full description (can be multiple paragraphs)
+          .exp-tags   → skill tags (add/remove .tag spans)
+          .exp-images → optional: add <img src="..."> elements; remove the div if unused
+      -->
 
-    <!-- Prompt + Full Name -->
-    <div class="prompt-line">
-      <span class="prompt-user">nebula</span><!-- EDIT: username -->
-      <span class="prompt-at">@</span>
-      <span class="prompt-host">localhost</span><!-- EDIT: hostname -->
-      <span class="prompt-sep">:</span>
-      <span class="prompt-path">~</span>
-      <span class="prompt-arrow">❯</span>
-      <span style="color:var(--comment)">whoami</span>
-    </div>
-
-    <!-- EDIT: Your full name below -->
-    <div class="fullname">Your Full Name<span class="cursor"></span></div>
-    <!-- EDIT: Your tagline / role below -->
-    <div class="fullname-sub"># robotics programmer · linux tinkerer · audio/visual tech</div>
-
-    <hr class="divider">
-    <div class="divider-label">sections</div>
-
-    <div class="sections-grid">
-
-      <!-- ── EXPERIENCE ── -->
-      <div class="panel">
-        <div class="panel-title blue">experience</div>
-
-        <!-- EDIT: experience items. Copy/paste the .exp-item block to add more -->
-        <div class="exp-item">
-          <div class="exp-role">FRC Robotics Programmer</div>
-          <div class="exp-org">Team 2130 Alpha · 2024 – present</div>
-          <div class="exp-desc">WPILib Java, command-based architecture, PathPlannerLib autonomous, PhotonVision dual-camera integration.</div>
+      <div class="exp-card" onclick="toggleExp(this)">
+        <div class="exp-header">
+          <div class="exp-left">
+            <span class="exp-role">FRC Robotics Programmer</span>
+            <span class="exp-org">Team 2130 Alpha</span>
+          </div>
+          <div class="exp-right">
+            <span class="exp-period">2024 – present</span>
+            <span class="exp-chevron">▾</span>
+          </div>
         </div>
-
-        <div class="exp-item">
-          <div class="exp-role">A/V Technician</div>
-          <div class="exp-org">Auditorium · 2023 – present</div>
-          <div class="exp-desc">Live sound, lighting control, and projection for events and performances.</div>
+        <div class="exp-body">
+          <div class="exp-desc">
+            <!-- EDIT: full description -->
+            Core programmer on a competitive FRC robotics team. Responsible for the full software
+            stack on the 2026 season robot including swerve drive, autonomous path planning,
+            and vision-based target tracking. Worked in a six-subsystem command-based architecture
+            with WPILib Java, integrated PhotonVision across dual cameras, and built autonomous
+            routines using PathPlannerLib. Also managed driver-station tooling via Elastic Dashboard.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">WPILib Java</span>
+            <span class="tag">PathPlannerLib</span>
+            <span class="tag">PhotonVision</span>
+            <span class="tag">Swerve Drive</span>
+            <span class="tag">Command-Based</span>
+          </div>
+          <!-- EDIT: add images or remove this block -->
+          <div class="exp-images">
+            <!-- <img src="robot1.jpg" alt="Robot at competition"> -->
+          </div>
         </div>
-
-        <div class="exp-item">
-          <div class="exp-role">Linux Systems / Homelab</div>
-          <div class="exp-org">Personal · ongoing</div>
-          <div class="exp-desc">Self-hosted stack on Mac Mini — Plex, FastAPI music server, custom TUI apps, Tailscale mesh.</div>
-        </div>
-
       </div>
 
-      <!-- ── SERVICES OFFERED ── -->
-      <div class="panel">
-        <div class="panel-title purple">services offered</div>
-
-        <!-- EDIT: service items. Copy/paste a .service-item to add more -->
-        <div class="service-item">
-          <span class="svc-icon">[+]</span>
-          <div>
-            <div class="svc-label">Software Development</div>
-            <div class="svc-desc">Java, Python, web — clean, maintainable code.</div>
+      <div class="exp-card" onclick="toggleExp(this)">
+        <div class="exp-header">
+          <div class="exp-left">
+            <span class="exp-role">Audio / Visual Technician</span>
+            <span class="exp-org">Auditorium</span>
+          </div>
+          <div class="exp-right">
+            <span class="exp-period">2023 – present</span>
+            <span class="exp-chevron">▾</span>
           </div>
         </div>
-
-        <div class="service-item">
-          <span class="svc-icon">[+]</span>
-          <div>
-            <div class="svc-label">Linux & Server Setup</div>
-            <div class="svc-desc">Self-hosted apps, networking, system config.</div>
+        <div class="exp-body">
+          <div class="exp-desc">
+            <!-- EDIT -->
+            Operate live sound, lighting, and projection systems for performances and events.
+            Responsible for pre-show setup, live mixing, and post-event teardown. Comfortable
+            with both front-of-house and monitor mixing, and coordinating with production staff.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">Live Sound</span>
+            <span class="tag">Lighting Control</span>
+            <span class="tag">Projection</span>
+          </div>
+          <div class="exp-images">
+            <!-- <img src="av1.jpg" alt="Mixing board"> -->
           </div>
         </div>
-
-        <div class="service-item">
-          <span class="svc-icon">[+]</span>
-          <div>
-            <div class="svc-label">Robotics Programming</div>
-            <div class="svc-desc">FRC/WPILib, vision systems, autonomous paths.</div>
-          </div>
-        </div>
-
-        <div class="service-item">
-          <span class="svc-icon">[+]</span>
-          <div>
-            <div class="svc-label">Audio / Visual Tech</div>
-            <div class="svc-desc">Live event sound, lighting, and projection.</div>
-          </div>
-        </div>
-
-        <div class="service-item">
-          <span class="svc-icon">[+]</span>
-          <div>
-            <div class="svc-label">UI / TUI Design</div>
-            <div class="svc-desc">Terminal interfaces, dashboards, web front-ends.</div>
-          </div>
-        </div>
-
       </div>
-    </div>
 
-    <!-- Footer -->
-    <div class="footer-row">
-      <!-- EDIT: status message -->
-      <span class="status-line"><span class="online">●</span> available for projects · bonners ferry, id</span>
-      <!-- This button links to projects.html — make sure that file is in the same folder -->
-      <a href="projects.html" class="btn-projects">open projects</a>
-    </div>
+      <div class="exp-card" onclick="toggleExp(this)">
+        <div class="exp-header">
+          <div class="exp-left">
+            <span class="exp-role">Linux Systems & Homelab</span>
+            <span class="exp-org">Personal</span>
+          </div>
+          <div class="exp-right">
+            <span class="exp-period">ongoing</span>
+            <span class="exp-chevron">▾</span>
+          </div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-desc">
+            <!-- EDIT -->
+            Run a self-hosted stack on a Mac Mini including a Plex media server, FastAPI music
+            server, and custom TUI applications. Maintain a Tailscale mesh across devices.
+            Daily-drive CachyOS (Arch-based) with a custom niri Wayland compositor setup,
+            full dotfiles configuration, and Tokyo Night theming across the entire environment.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">Linux</span>
+            <span class="tag">Python</span>
+            <span class="tag">FastAPI</span>
+            <span class="tag">Tailscale</span>
+            <span class="tag">Wayland</span>
+            <span class="tag">Self-Hosting</span>
+          </div>
+          <div class="exp-images">
+            <!-- <img src="homelab.jpg" alt="Homelab setup"> -->
+          </div>
+        </div>
+      </div>
 
-  </div><!-- /terminal -->
-</div><!-- /shell -->
+    </div>
+  </div>
+
+  <!-- ══ SERVICES ══ -->
+  <div class="section">
+    <div class="sec-label">services offered</div>
+    <div class="exp-list">
+
+      <!-- EDIT: same expand pattern as experience cards -->
+      <div class="exp-card" onclick="toggleExp(this)">
+        <div class="exp-header">
+          <div class="exp-left">
+            <span class="exp-role">Software Development</span>
+            <span class="exp-org">Java · Python · Web</span>
+          </div>
+          <div class="exp-right"><span class="exp-chevron">▾</span></div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-desc">
+            <!-- EDIT -->
+            Build clean, maintainable software in Java and Python. Experience with command-based
+            robotics systems, REST APIs (FastAPI), and browser-based tools. Comfortable picking
+            up new frameworks and codebases quickly.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">Java</span><span class="tag">Python</span>
+            <span class="tag">HTML/CSS/JS</span><span class="tag">FastAPI</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-card" onclick="toggleExp(this)">
+        <div class="exp-header">
+          <div class="exp-left">
+            <span class="exp-role">Linux & Server Setup</span>
+            <span class="exp-org">Self-hosted · Networking · Config</span>
+          </div>
+          <div class="exp-right"><span class="exp-chevron">▾</span></div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-desc">
+            <!-- EDIT -->
+            Set up and maintain Linux servers, self-hosted applications, and home network
+            infrastructure. Experienced with Arch-based distros, systemd/launchd, reverse
+            proxies, and VPN mesh networking via Tailscale.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">Arch Linux</span><span class="tag">systemd</span>
+            <span class="tag">Tailscale</span><span class="tag">Networking</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-card" onclick="toggleExp(this)">
+        <div class="exp-header">
+          <div class="exp-left">
+            <span class="exp-role">Robotics Programming</span>
+            <span class="exp-org">FRC · WPILib · Vision</span>
+          </div>
+          <div class="exp-right"><span class="exp-chevron">▾</span></div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-desc">
+            <!-- EDIT -->
+            Design and implement robot software for competitive FRC teams. Skilled in
+            command-based architecture, autonomous path planning, and computer vision
+            integration for real-time target tracking.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">WPILib</span><span class="tag">PathPlannerLib</span>
+            <span class="tag">PhotonVision</span><span class="tag">Autonomous</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-card" onclick="toggleExp(this)">
+        <div class="exp-header">
+          <div class="exp-left">
+            <span class="exp-role">Audio / Visual Production</span>
+            <span class="exp-org">Live Events · Sound · Lighting</span>
+          </div>
+          <div class="exp-right"><span class="exp-chevron">▾</span></div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-desc">
+            <!-- EDIT -->
+            Full production support for live events: front-of-house sound, monitor mixing,
+            stage lighting, and projection. Experienced with setup, operation, and teardown
+            for performances of varying scale.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">FOH Mixing</span><span class="tag">Lighting</span>
+            <span class="tag">Projection</span><span class="tag">Production</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ FOOTER NAV ══ -->
+  <div class="footer-nav">
+    <!-- EDIT: status / availability note -->
+    <span class="footer-note">available for projects &amp; collaboration</span>
+    <a href="projects.html" class="btn">view projects →</a>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// Toggle expand on experience/service cards
+function toggleExp(card) {
+  card.classList.toggle('open');
+}
+
+// Show profile image if one is set (replace '' in src with your image path)
+window.addEventListener('DOMContentLoaded', () => {
+  const img = document.getElementById('profile-img');
+  const ph  = document.getElementById('photo-ph');
+  if (img && img.src && !img.src.endsWith('/')) {
+    img.style.display = 'block';
+    ph.style.display  = 'none';
+  }
+});
+</script>
 </body>
 </html>

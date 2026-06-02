@@ -1,358 +1,624 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nebula // projects</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg:        #1a1b26;
-      --bg-alt:    #16161e;
-      --bg-panel:  #1f2335;
-      --border:    #292e42;
-      --border-hl: #3b4261;
-      --comment:   #565f89;
-      --fg:        #a9b1d6;
-      --fg-dim:    #787c99;
-      --blue:      #7aa2f7;
-      --cyan:      #7dcfff;
-      --green:     #9ece6a;
-      --purple:    #bb9af7;
-      --red:       #f7768e;
-      --orange:    #ff9e64;
-      --yellow:    #e0af68;
-      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>nebula // projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0d0d0d;
+  --surface:   #141414;
+  --surface2:  #1a1a1a;
+  --surface3:  #222222;
+  --border:    #2a2a2a;
+  --border2:   #383838;
+  --text:      #e0e0e0;
+  --text-dim:  #888;
+  --text-faint:#555;
+  --mono: 'JetBrains Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.65;
+}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+/* ── LAYOUT ── */
+.page{max-width:900px;margin:0 auto;padding:3rem 2rem 5rem}
 
-    body {
-      background: var(--bg-alt);
-      color: var(--fg);
-      font-family: var(--font-mono);
-      font-size: 14px;
-      line-height: 1.6;
-      min-height: 100vh;
-      background-image: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
-      );
-    }
+/* ── TOP NAV ── */
+.topnav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:2.5rem;
+  padding-bottom:1.5rem;
+  border-bottom:1px solid var(--border);
+}
+.back-btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-size:11px;color:var(--text-faint);text-decoration:none;
+  transition:color .15s;
+  letter-spacing:.05em;
+}
+.back-btn:hover{color:var(--text-dim)}
+.page-heading{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text-faint)}
 
-    .shell {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
-    }
+/* ── SECTION LABEL ── */
+.sec-label{
+  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--text-faint);margin-bottom:1.2rem;
+  display:flex;align-items:center;gap:.8rem;
+}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-    .titlebar {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-bottom: none;
-      padding: .45rem .9rem;
-      border-radius: 6px 6px 0 0;
-    }
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot-red    { background: var(--red); }
-    .dot-yellow { background: var(--yellow); }
-    .dot-green  { background: var(--green); }
-    .titlebar-label {
-      margin-left: auto;
-      font-size: 11px;
-      color: var(--comment);
-      letter-spacing: .08em;
-    }
+/* ── PROJECT GRID ── */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:.8rem;
+  margin-bottom:3rem;
+}
+@media(max-width:420px){.projects-grid{grid-template-columns:1fr}}
 
-    .terminal {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-radius: 0 0 6px 6px;
-      padding: 2rem 2.5rem;
-    }
+/* ── PROJECT CARD ── */
+.proj-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:3px;
+  cursor:pointer;
+  transition:border-color .18s,background .15s;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.proj-card:hover{border-color:var(--border2);background:var(--surface2)}
 
-    .glow-bar {
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--purple), var(--blue), var(--cyan), transparent);
-      border-radius: 99px;
-      margin-bottom: 2rem;
-      opacity: .6;
-    }
+.proj-thumb{
+  width:100%;height:140px;
+  background:var(--surface2);
+  overflow:hidden;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.proj-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.proj-thumb-ph{
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  color:var(--text-faint);font-size:10px;letter-spacing:.08em;
+}
+.proj-thumb-ph svg{opacity:.25}
 
-    /* Back button */
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .4rem;
-      color: var(--comment);
-      font-size: 12px;
-      text-decoration: none;
-      margin-bottom: 1.8rem;
-      transition: color .15s;
-    }
-    .back-btn:hover { color: var(--blue); }
-    .back-btn::before { content: '← '; }
+.proj-body{padding:.9rem 1rem;flex:1;display:flex;flex-direction:column;gap:.4rem}
+.proj-name{font-size:13px;font-weight:700;color:var(--text)}
+.proj-short{font-size:11px;color:var(--text-dim);line-height:1.55}
+.proj-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:.6rem;
+}
+.proj-tag{
+  font-size:10px;letter-spacing:.07em;
+  border:1px solid var(--border2);
+  color:var(--text-faint);padding:.12rem .45rem;border-radius:2px;
+}
+.proj-expand-hint{font-size:10px;color:var(--text-faint);letter-spacing:.04em}
 
-    /* Page header */
-    .page-header {
-      margin-bottom: 2rem;
-    }
-    .prompt-line {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      flex-wrap: wrap;
-      margin-bottom: .5rem;
-    }
-    .prompt-user  { color: var(--green); }
-    .prompt-at    { color: var(--comment); }
-    .prompt-host  { color: var(--blue); }
-    .prompt-sep   { color: var(--comment); }
-    .prompt-path  { color: var(--purple); }
-    .prompt-arrow { color: var(--cyan); }
-    .page-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--fg);
-      letter-spacing: .04em;
-    }
-    .page-sub {
-      font-size: 12px;
-      color: var(--comment);
-      margin-top: .2rem;
-    }
+/* ── MODAL OVERLAY ── */
+.modal-overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.85);
+  z-index:100;
+  overflow-y:auto;
+  padding:2rem 1rem;
+  /* fade in */
+  animation:fadeIn .18s ease;
+}
+.modal-overlay.open{display:flex;align-items:flex-start;justify-content:center}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 1.5rem 0;
-    }
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:4px;
+  width:100%;max-width:760px;
+  position:relative;
+  animation:slideUp .2s ease;
+}
+@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
 
-    /* Projects grid */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 1.2rem;
-    }
-    @media (max-width: 480px) { .projects-grid { grid-template-columns: 1fr; } }
+.modal-close{
+  position:absolute;top:1rem;right:1rem;
+  background:none;border:none;color:var(--text-faint);
+  font-size:18px;cursor:pointer;line-height:1;padding:.2rem .4rem;
+  font-family:var(--mono);
+  transition:color .15s;
+  z-index:2;
+}
+.modal-close:hover{color:var(--text)}
 
-    /* Project card */
-    .project-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1.2rem 1.4rem;
-      transition: border-color .2s, transform .15s;
-      display: flex;
-      flex-direction: column;
-      gap: .6rem;
-    }
-    .project-card:hover {
-      border-color: var(--border-hl);
-      transform: translateY(-2px);
-    }
+/* Modal hero image */
+.modal-hero{
+  width:100%;height:220px;
+  object-fit:cover;
+  border-bottom:1px solid var(--border);
+  display:block;
+}
+.modal-hero[src=""]{display:none}
 
-    .project-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .5rem;
-    }
-    .project-name {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--cyan);
-      /* EDIT */
-    }
-    .project-tag {
-      font-size: 10px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      padding: .15rem .5rem;
-      border-radius: 2px;
-      border: 1px solid;
-    }
-    /* tag color variants — add class to .project-tag */
-    .tag-blue   { color: var(--blue);   border-color: var(--blue);   background: rgba(122,162,247,.08); }
-    .tag-green  { color: var(--green);  border-color: var(--green);  background: rgba(158,206,106,.08); }
-    .tag-purple { color: var(--purple); border-color: var(--purple); background: rgba(187,154,247,.08); }
-    .tag-orange { color: var(--orange); border-color: var(--orange); background: rgba(255,158,100,.08); }
-    .tag-red    { color: var(--red);    border-color: var(--red);    background: rgba(247,118,142,.08); }
-    .tag-cyan   { color: var(--cyan);   border-color: var(--cyan);   background: rgba(125,207,255,.08); }
+.modal-content{padding:2rem}
 
-    .project-desc {
-      font-size: 12px;
-      color: var(--fg-dim);
-      line-height: 1.55;
-      /* EDIT */
-    }
+.modal-header{margin-bottom:1.5rem}
+.modal-title{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.modal-subtitle{font-size:11px;color:var(--text-dim)}
 
-    .project-meta {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-top: .2rem;
-      flex-wrap: wrap;
-    }
-    .project-lang {
-      font-size: 11px;
-      color: var(--comment);
-    }
-    .project-lang::before { content: '# '; }
+.modal-section{margin-bottom:1.5rem}
+.modal-sec-label{
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text-faint);margin-bottom:.7rem;
+  border-bottom:1px solid var(--border);padding-bottom:.4rem;
+}
+.modal-body{font-size:12px;color:var(--text-dim);line-height:1.8}
+.modal-body p+p{margin-top:.8rem}
 
-    .project-link {
-      font-size: 11px;
-      color: var(--blue);
-      text-decoration: none;
-      margin-left: auto;
-      transition: color .15s;
-    }
-    .project-link:hover { color: var(--cyan); }
-    .project-link::after { content: ' ↗'; }
+/* Modal image gallery */
+.modal-gallery{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:.6rem;margin-top:.6rem;
+}
+.modal-gallery img{
+  width:100%;border-radius:2px;border:1px solid var(--border);
+  object-fit:cover;max-height:150px;
+  cursor:zoom-in;
+  transition:opacity .15s;
+}
+.modal-gallery img:hover{opacity:.85}
 
-    .footer-note {
-      margin-top: 2rem;
-      font-size: 11px;
-      color: var(--comment);
-      text-align: center;
-    }
-  </style>
+/* Tech tags */
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{
+  font-size:10px;letter-spacing:.07em;
+  border:1px solid var(--border2);color:var(--text-faint);
+  padding:.15rem .55rem;border-radius:2px;
+}
+
+/* Modal links */
+.modal-links{display:flex;flex-wrap:wrap;gap:.6rem}
+.modal-link{
+  font-size:11px;color:var(--text-dim);text-decoration:none;
+  border:1px solid var(--border2);
+  padding:.35rem .8rem;border-radius:2px;
+  display:inline-flex;align-items:center;gap:.35rem;
+  transition:border-color .15s,color .15s;
+}
+.modal-link:hover{border-color:var(--text-faint);color:var(--text)}
+
+/* ── LIGHTBOX ── */
+.lightbox{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.95);z-index:200;
+  align-items:center;justify-content:center;cursor:zoom-out;
+}
+.lightbox.open{display:flex}
+.lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:2px}
+
+/* ── FOOTER ── */
+.footer-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;
+  padding-top:2rem;border-top:1px solid var(--border);
+}
+.footer-note{font-size:11px;color:var(--text-faint)}
+.btn{
+  display:inline-flex;align-items:center;gap:.45rem;
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:.55rem 1.2rem;border-radius:3px;
+  border:1px solid var(--border2);background:var(--surface2);
+  color:var(--text);text-decoration:none;cursor:pointer;
+  transition:background .15s,border-color .15s;
+}
+.btn:hover{background:var(--surface3);border-color:var(--text-faint)}
+</style>
 </head>
 <body>
-<div class="shell">
+<div class="page">
 
-  <div class="titlebar">
-    <span class="dot dot-red"></span>
-    <span class="dot dot-yellow"></span>
-    <span class="dot dot-green"></span>
-    <!-- EDIT -->
-    <span class="titlebar-label">nebula@localhost ~/projects zsh</span>
+  <div class="topnav">
+    <a href="index.html" class="back-btn">← back</a>
+    <span class="page-heading">projects</span>
   </div>
 
-  <div class="terminal">
-    <div class="glow-bar"></div>
+  <div class="sec-label">selected work</div>
 
-    <a href="index.html" class="back-btn">cd ..</a>
+  <!--
+    ══ HOW TO ADD A PROJECT ══
 
-    <div class="page-header">
-      <div class="prompt-line">
-        <span class="prompt-user">nebula</span>
-        <span class="prompt-at">@</span>
-        <span class="prompt-host">localhost</span>
-        <span class="prompt-sep">:</span>
-        <span class="prompt-path">~/projects</span>
-        <span class="prompt-arrow">❯</span>
-        <span style="color:var(--comment)">ls -la</span>
+    1. Copy one .proj-card block into .projects-grid
+    2. Fill in the visible card info (thumb image, name, short desc, tag)
+    3. At the bottom of <body>, copy one <div class="modal"> block
+    4. Give the card and its modal matching IDs:
+         card: onclick="openModal('proj-X')"
+         modal: id="proj-X"
+    5. Fill in the modal content: title, description paragraphs, tags, links, images
+    6. For card thumbnail: set <img src="yourimage.jpg"> inside .proj-thumb
+    7. For modal hero:     set src="yourimage.jpg" on .modal-hero
+    8. For gallery images: add <img src="..."> inside .modal-gallery
+
+    REMOVE the placeholder divs and img tags you don't use.
+  -->
+
+  <div class="projects-grid">
+
+    <div class="proj-card" onclick="openModal('proj-nebula')">
+      <div class="proj-thumb">
+        <!-- EDIT: <img src="nebula-thumb.jpg" alt=""> -->
+        <div class="proj-thumb-ph">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>thumbnail</span>
+        </div>
       </div>
-      <div class="page-title">projects/</div>
-      <!-- EDIT: subtitle -->
-      <div class="page-sub"># things i've built, hacked, or shipped</div>
+      <div class="proj-body">
+        <div class="proj-name">nebula suite</div>
+        <div class="proj-short">Self-hosted web app collection with unified dark theming.</div>
+        <div class="proj-footer">
+          <span class="proj-tag">homelab</span>
+          <span class="proj-expand-hint">click to expand ↗</span>
+        </div>
+      </div>
     </div>
 
-    <hr class="divider">
-
-    <div class="projects-grid">
-
-      <!--
-        ── HOW TO ADD A PROJECT ──
-        Copy one .project-card block below and fill in:
-          - .project-name      → project title
-          - .project-tag       → category label + color class (tag-blue/green/purple/orange/red/cyan)
-          - .project-desc      → short description
-          - .project-lang      → language / stack
-          - .project-link href → URL to repo or live site (remove the anchor if none)
-      -->
-
-      <div class="project-card">
-        <div class="project-header">
-          <span class="project-name">nebula suite</span>
-          <span class="project-tag tag-blue">homelab</span>
-        </div>
-        <div class="project-desc">
-          Self-hosted web app collection on Mac Mini — Plex frontend, FastAPI music server,
-          TUI notes app, all themed Tokyo Night with launchd process management.
-        </div>
-        <div class="project-meta">
-          <span class="project-lang">Python · HTML · FastAPI</span>
-          <a href="#" class="project-link">view repo</a>
+    <div class="proj-card" onclick="openModal('proj-2026main')">
+      <div class="proj-thumb">
+        <!-- EDIT: <img src="robot-thumb.jpg" alt=""> -->
+        <div class="proj-thumb-ph">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>thumbnail</span>
         </div>
       </div>
-
-      <div class="project-card">
-        <div class="project-header">
-          <span class="project-name">2026main</span>
-          <span class="project-tag tag-orange">robotics</span>
-        </div>
-        <div class="project-desc">
-          FRC Team 2130 competition robot — swerve drive, dual-camera PhotonVision,
-          PathPlannerLib autos, and six subsystems in command-based WPILib Java.
-        </div>
-        <div class="project-meta">
-          <span class="project-lang">Java · WPILib · PhotonVision</span>
-          <a href="#" class="project-link">view repo</a>
+      <div class="proj-body">
+        <div class="proj-name">2026main</div>
+        <div class="proj-short">FRC Team 2130 competition robot software stack.</div>
+        <div class="proj-footer">
+          <span class="proj-tag">robotics</span>
+          <span class="proj-expand-hint">click to expand ↗</span>
         </div>
       </div>
-
-      <div class="project-card">
-        <div class="project-header">
-          <span class="project-name">Reelbook</span>
-          <span class="project-tag tag-green">web</span>
-        </div>
-        <div class="project-desc">
-          Standalone HTML sheet music reader with annotation tools, folder import,
-          and a dark themed interface built for live performance use.
-        </div>
-        <div class="project-meta">
-          <span class="project-lang">HTML · CSS · JS</span>
-          <a href="#" class="project-link">view repo</a>
-        </div>
-      </div>
-
-      <div class="project-card">
-        <div class="project-header">
-          <span class="project-name">niri dotfiles</span>
-          <span class="project-tag tag-purple">linux</span>
-        </div>
-        <div class="project-desc">
-          Full Wayland compositor setup on CachyOS — niri config, keybinds,
-          Tokyo Night theming, and hardware quirk fixes for my machine.
-        </div>
-        <div class="project-meta">
-          <span class="project-lang">Nix · Shell · CSS</span>
-          <a href="#" class="project-link">view repo</a>
-        </div>
-      </div>
-
-      <div class="project-card">
-        <div class="project-header">
-          <span class="project-name">team 2130 website</span>
-          <span class="project-tag tag-cyan">web</span>
-        </div>
-        <div class="project-desc">
-          Redesigned FRC team website hosted on Netlify — modern layout,
-          responsive design, maintained with the 2130-Programmers org on GitHub.
-        </div>
-        <div class="project-meta">
-          <span class="project-lang">HTML · CSS · JS</span>
-          <a href="#" class="project-link">view repo</a>
-        </div>
-      </div>
-
-      <!-- ADD MORE PROJECT CARDS HERE -->
-
     </div>
 
-    <div class="footer-note">
-      <!-- EDIT -->
-      # more on <a href="https://github.com/nebula762814" style="color:var(--blue);text-decoration:none;">github</a>
+    <div class="proj-card" onclick="openModal('proj-reelbook')">
+      <div class="proj-thumb">
+        <div class="proj-thumb-ph">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>thumbnail</span>
+        </div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-name">Reelbook</div>
+        <div class="proj-short">Standalone sheet music reader with annotation support.</div>
+        <div class="proj-footer">
+          <span class="proj-tag">web</span>
+          <span class="proj-expand-hint">click to expand ↗</span>
+        </div>
+      </div>
     </div>
 
+    <div class="proj-card" onclick="openModal('proj-dotfiles')">
+      <div class="proj-thumb">
+        <div class="proj-thumb-ph">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>thumbnail</span>
+        </div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-name">niri dotfiles</div>
+        <div class="proj-short">Full Wayland compositor setup on CachyOS / Arch.</div>
+        <div class="proj-footer">
+          <span class="proj-tag">linux</span>
+          <span class="proj-expand-hint">click to expand ↗</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card" onclick="openModal('proj-website')">
+      <div class="proj-thumb">
+        <div class="proj-thumb-ph">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>thumbnail</span>
+        </div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-name">Team 2130 Website</div>
+        <div class="proj-short">Redesigned FRC team site hosted on Netlify.</div>
+        <div class="proj-footer">
+          <span class="proj-tag">web</span>
+          <span class="proj-expand-hint">click to expand ↗</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD MORE CARDS HERE -->
+
+  </div><!-- /projects-grid -->
+
+  <div class="footer-nav">
+    <span class="footer-note">click any project to read more</span>
+    <a href="index.html" class="btn">← back to home</a>
+  </div>
+
+</div><!-- /page -->
+
+<!-- ══════════════════════════════════
+     MODALS — one per project
+     ══════════════════════════════════ -->
+
+<!-- MODAL: nebula suite -->
+<div class="modal-overlay" id="proj-nebula" onclick="overlayClick(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('proj-nebula')">✕</button>
+
+    <!-- EDIT: hero image. Remove tag if you have no hero. -->
+    <!-- <img class="modal-hero" src="nebula-hero.jpg" alt=""> -->
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">nebula suite</div>
+        <!-- EDIT: subtitle / date -->
+        <div class="modal-subtitle">homelab · 2024 – present</div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-sec-label">about</div>
+        <div class="modal-body">
+          <!-- EDIT: write as much as you want here. Use <p> tags for paragraphs. -->
+          <p>A cohesive set of self-hosted web applications running on a Mac Mini, all sharing a unified dark theme and served via Python HTTP servers managed by launchd on ports 7776–7778.</p>
+          <p>Includes a Plex media frontend with a custom player overlay and persistent credential storage, a FastAPI music server pointing at a local library, and a TUI-style notes app built with Python and Textual that syncs to GitHub.</p>
+        </div>
+      </div>
+
+      <!-- EDIT: tech tags -->
+      <div class="modal-section">
+        <div class="modal-sec-label">stack</div>
+        <div class="tag-row">
+          <span class="tag">Python</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">Textual</span>
+          <span class="tag">HTML/CSS</span>
+          <span class="tag">launchd</span>
+          <span class="tag">Mac Mini</span>
+          <span class="tag">Tailscale</span>
+        </div>
+      </div>
+
+      <!-- EDIT: gallery images. Add <img src="..."> or remove block. -->
+      <div class="modal-section">
+        <div class="modal-sec-label">screenshots</div>
+        <div class="modal-gallery">
+          <!-- <img src="nebula-plex.jpg" alt="Plex frontend" onclick="lightbox(this)"> -->
+          <!-- <img src="nebula-music.jpg" alt="Music server" onclick="lightbox(this)"> -->
+        </div>
+      </div>
+
+      <!-- EDIT: links. Remove anchors you don't need. -->
+      <div class="modal-section">
+        <div class="modal-sec-label">links</div>
+        <div class="modal-links">
+          <a href="#" class="modal-link" target="_blank">⌥ GitHub repo</a>
+          <!-- <a href="#" class="modal-link" target="_blank">↗ Live demo</a> -->
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- MODAL: 2026main -->
+<div class="modal-overlay" id="proj-2026main" onclick="overlayClick(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('proj-2026main')">✕</button>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">2026main</div>
+        <div class="modal-subtitle">robotics · FRC Team 2130 Alpha · 2026 season</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">about</div>
+        <div class="modal-body">
+          <p>Full robot software stack for Team 2130's 2026 FRC competition robot. Built in WPILib Java using a command-based architecture across six subsystems including swerve drive, launcher, and intake.</p>
+          <p>Integrated dual PhotonVision cameras for real-time AprilTag tracking and target alignment. Autonomous routines generated and tuned with PathPlannerLib. Driver-station telemetry and camera streams surfaced via Elastic Dashboard.</p>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">stack</div>
+        <div class="tag-row">
+          <span class="tag">WPILib Java</span>
+          <span class="tag">PathPlannerLib</span>
+          <span class="tag">PhotonVision</span>
+          <span class="tag">Elastic Dashboard</span>
+          <span class="tag">ADIS16470 IMU</span>
+          <span class="tag">Swerve Drive</span>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">screenshots</div>
+        <div class="modal-gallery">
+          <!-- <img src="robot-field.jpg" alt="" onclick="lightbox(this)"> -->
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">links</div>
+        <div class="modal-links">
+          <a href="https://github.com/2130-Programmers/2026main" class="modal-link" target="_blank">⌥ GitHub repo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Reelbook -->
+<div class="modal-overlay" id="proj-reelbook" onclick="overlayClick(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('proj-reelbook')">✕</button>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Reelbook</div>
+        <div class="modal-subtitle">web · standalone html app · 2024</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">about</div>
+        <div class="modal-body">
+          <p>A single-file HTML sheet music reader designed for live performance use. Supports folder import, page navigation, and annotation tools, all without any server or install required.</p>
+          <p>Built with a dark interface to reduce eye strain on stage, and optimized for touch devices so it can run on a tablet or laptop in a live setting.</p>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">stack</div>
+        <div class="tag-row">
+          <span class="tag">HTML</span><span class="tag">CSS</span>
+          <span class="tag">Vanilla JS</span><span class="tag">Canvas API</span>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">screenshots</div>
+        <div class="modal-gallery">
+          <!-- <img src="reelbook-1.jpg" alt="" onclick="lightbox(this)"> -->
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">links</div>
+        <div class="modal-links">
+          <a href="#" class="modal-link" target="_blank">⌥ GitHub repo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: niri dotfiles -->
+<div class="modal-overlay" id="proj-dotfiles" onclick="overlayClick(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('proj-dotfiles')">✕</button>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">niri dotfiles</div>
+        <div class="modal-subtitle">linux · CachyOS · Wayland · ongoing</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">about</div>
+        <div class="modal-body">
+          <p>Full compositor configuration for niri, a scrollable-tiling Wayland compositor, running on CachyOS (Arch-based). Includes complete keybind layout, per-app window rules, and hardware-specific fixes for touchpad, brightness keys, and keyboard backlight.</p>
+          <p>Themed consistently across the entire environment with a dark monospace aesthetic. Dotfiles are version-controlled and maintained as a living configuration.</p>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">stack</div>
+        <div class="tag-row">
+          <span class="tag">niri</span><span class="tag">Wayland</span>
+          <span class="tag">CachyOS</span><span class="tag">Shell</span>
+          <span class="tag">KDE / GTK theming</span>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">screenshots</div>
+        <div class="modal-gallery">
+          <!-- <img src="niri-desktop.jpg" alt="" onclick="lightbox(this)"> -->
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">links</div>
+        <div class="modal-links">
+          <a href="#" class="modal-link" target="_blank">⌥ GitHub repo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Team 2130 website -->
+<div class="modal-overlay" id="proj-website" onclick="overlayClick(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('proj-website')">✕</button>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Team 2130 Website</div>
+        <div class="modal-subtitle">web · Netlify · 2130-Programmers org</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">about</div>
+        <div class="modal-body">
+          <p>A full redesign of the FRC Team 2130 public website. Hosted on Netlify with continuous deployment from the 2130-Programmers GitHub organization.</p>
+          <p>Focused on a clean, modern layout that works across devices, making it easy for the team to update with season information, sponsor listings, and match results.</p>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">stack</div>
+        <div class="tag-row">
+          <span class="tag">HTML</span><span class="tag">CSS</span>
+          <span class="tag">JS</span><span class="tag">Netlify</span><span class="tag">GitHub</span>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">screenshots</div>
+        <div class="modal-gallery">
+          <!-- <img src="website-1.jpg" alt="" onclick="lightbox(this)"> -->
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-label">links</div>
+        <div class="modal-links">
+          <a href="https://github.com/2130-Programmers/NewWebsite" class="modal-link" target="_blank">⌥ GitHub repo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LIGHTBOX ══ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+function overlayClick(e, overlay) {
+  if (e.target === overlay) {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => {
+      m.classList.remove('open');
+    });
+    closeLightbox();
+    document.body.style.overflow = '';
+  }
+});
+
+function lightbox(img) {
+  document.getElementById('lightbox-img').src = img.src;
+  document.getElementById('lightbox').classList.add('open');
+  event.stopPropagation();
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+</script>
 </body>
 </html>
