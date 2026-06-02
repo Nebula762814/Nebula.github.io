@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nebula // projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #1a1b26;
+      --bg-alt:    #16161e;
+      --bg-panel:  #1f2335;
+      --border:    #292e42;
+      --border-hl: #3b4261;
+      --comment:   #565f89;
+      --fg:        #a9b1d6;
+      --fg-dim:    #787c99;
+      --blue:      #7aa2f7;
+      --cyan:      #7dcfff;
+      --green:     #9ece6a;
+      --purple:    #bb9af7;
+      --red:       #f7768e;
+      --orange:    #ff9e64;
+      --yellow:    #e0af68;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-alt);
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      background-image: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+      );
+    }
+
+    .shell {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .titlebar {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      padding: .45rem .9rem;
+      border-radius: 6px 6px 0 0;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red    { background: var(--red); }
+    .dot-yellow { background: var(--yellow); }
+    .dot-green  { background: var(--green); }
+    .titlebar-label {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--comment);
+      letter-spacing: .08em;
+    }
+
+    .terminal {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 0 0 6px 6px;
+      padding: 2rem 2.5rem;
+    }
+
+    .glow-bar {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--purple), var(--blue), var(--cyan), transparent);
+      border-radius: 99px;
+      margin-bottom: 2rem;
+      opacity: .6;
+    }
+
+    /* Back button */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      color: var(--comment);
+      font-size: 12px;
+      text-decoration: none;
+      margin-bottom: 1.8rem;
+      transition: color .15s;
+    }
+    .back-btn:hover { color: var(--blue); }
+    .back-btn::before { content: '← '; }
+
+    /* Page header */
+    .page-header {
+      margin-bottom: 2rem;
+    }
+    .prompt-line {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-bottom: .5rem;
+    }
+    .prompt-user  { color: var(--green); }
+    .prompt-at    { color: var(--comment); }
+    .prompt-host  { color: var(--blue); }
+    .prompt-sep   { color: var(--comment); }
+    .prompt-path  { color: var(--purple); }
+    .prompt-arrow { color: var(--cyan); }
+    .page-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: .04em;
+    }
+    .page-sub {
+      font-size: 12px;
+      color: var(--comment);
+      margin-top: .2rem;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
+    /* Projects grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.2rem;
+    }
+    @media (max-width: 480px) { .projects-grid { grid-template-columns: 1fr; } }
+
+    /* Project card */
+    .project-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.2rem 1.4rem;
+      transition: border-color .2s, transform .15s;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+    .project-card:hover {
+      border-color: var(--border-hl);
+      transform: translateY(-2px);
+    }
+
+    .project-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+    }
+    .project-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cyan);
+      /* EDIT */
+    }
+    .project-tag {
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .15rem .5rem;
+      border-radius: 2px;
+      border: 1px solid;
+    }
+    /* tag color variants — add class to .project-tag */
+    .tag-blue   { color: var(--blue);   border-color: var(--blue);   background: rgba(122,162,247,.08); }
+    .tag-green  { color: var(--green);  border-color: var(--green);  background: rgba(158,206,106,.08); }
+    .tag-purple { color: var(--purple); border-color: var(--purple); background: rgba(187,154,247,.08); }
+    .tag-orange { color: var(--orange); border-color: var(--orange); background: rgba(255,158,100,.08); }
+    .tag-red    { color: var(--red);    border-color: var(--red);    background: rgba(247,118,142,.08); }
+    .tag-cyan   { color: var(--cyan);   border-color: var(--cyan);   background: rgba(125,207,255,.08); }
+
+    .project-desc {
+      font-size: 12px;
+      color: var(--fg-dim);
+      line-height: 1.55;
+      /* EDIT */
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: .2rem;
+      flex-wrap: wrap;
+    }
+    .project-lang {
+      font-size: 11px;
+      color: var(--comment);
+    }
+    .project-lang::before { content: '# '; }
+
+    .project-link {
+      font-size: 11px;
+      color: var(--blue);
+      text-decoration: none;
+      margin-left: auto;
+      transition: color .15s;
+    }
+    .project-link:hover { color: var(--cyan); }
+    .project-link::after { content: ' ↗'; }
+
+    .footer-note {
+      margin-top: 2rem;
+      font-size: 11px;
+      color: var(--comment);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="titlebar">
+    <span class="dot dot-red"></span>
+    <span class="dot dot-yellow"></span>
+    <span class="dot dot-green"></span>
+    <!-- EDIT -->
+    <span class="titlebar-label">nebula@localhost ~/projects zsh</span>
+  </div>
+
+  <div class="terminal">
+    <div class="glow-bar"></div>
+
+    <a href="index.html" class="back-btn">cd ..</a>
+
+    <div class="page-header">
+      <div class="prompt-line">
+        <span class="prompt-user">nebula</span>
+        <span class="prompt-at">@</span>
+        <span class="prompt-host">localhost</span>
+        <span class="prompt-sep">:</span>
+        <span class="prompt-path">~/projects</span>
+        <span class="prompt-arrow">❯</span>
+        <span style="color:var(--comment)">ls -la</span>
+      </div>
+      <div class="page-title">projects/</div>
+      <!-- EDIT: subtitle -->
+      <div class="page-sub"># things i've built, hacked, or shipped</div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="projects-grid">
+
+      <!--
+        ── HOW TO ADD A PROJECT ──
+        Copy one .project-card block below and fill in:
+          - .project-name      → project title
+          - .project-tag       → category label + color class (tag-blue/green/purple/orange/red/cyan)
+          - .project-desc      → short description
+          - .project-lang      → language / stack
+          - .project-link href → URL to repo or live site (remove the anchor if none)
+      -->
+
+      <div class="project-card">
+        <div class="project-header">
+          <span class="project-name">nebula suite</span>
+          <span class="project-tag tag-blue">homelab</span>
+        </div>
+        <div class="project-desc">
+          Self-hosted web app collection on Mac Mini — Plex frontend, FastAPI music server,
+          TUI notes app, all themed Tokyo Night with launchd process management.
+        </div>
+        <div class="project-meta">
+          <span class="project-lang">Python · HTML · FastAPI</span>
+          <a href="#" class="project-link">view repo</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <span class="project-name">2026main</span>
+          <span class="project-tag tag-orange">robotics</span>
+        </div>
+        <div class="project-desc">
+          FRC Team 2130 competition robot — swerve drive, dual-camera PhotonVision,
+          PathPlannerLib autos, and six subsystems in command-based WPILib Java.
+        </div>
+        <div class="project-meta">
+          <span class="project-lang">Java · WPILib · PhotonVision</span>
+          <a href="#" class="project-link">view repo</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <span class="project-name">Reelbook</span>
+          <span class="project-tag tag-green">web</span>
+        </div>
+        <div class="project-desc">
+          Standalone HTML sheet music reader with annotation tools, folder import,
+          and a dark themed interface built for live performance use.
+        </div>
+        <div class="project-meta">
+          <span class="project-lang">HTML · CSS · JS</span>
+          <a href="#" class="project-link">view repo</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <span class="project-name">niri dotfiles</span>
+          <span class="project-tag tag-purple">linux</span>
+        </div>
+        <div class="project-desc">
+          Full Wayland compositor setup on CachyOS — niri config, keybinds,
+          Tokyo Night theming, and hardware quirk fixes for my machine.
+        </div>
+        <div class="project-meta">
+          <span class="project-lang">Nix · Shell · CSS</span>
+          <a href="#" class="project-link">view repo</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <span class="project-name">team 2130 website</span>
+          <span class="project-tag tag-cyan">web</span>
+        </div>
+        <div class="project-desc">
+          Redesigned FRC team website hosted on Netlify — modern layout,
+          responsive design, maintained with the 2130-Programmers org on GitHub.
+        </div>
+        <div class="project-meta">
+          <span class="project-lang">HTML · CSS · JS</span>
+          <a href="#" class="project-link">view repo</a>
+        </div>
+      </div>
+
+      <!-- ADD MORE PROJECT CARDS HERE -->
+
+    </div>
+
+    <div class="footer-note">
+      <!-- EDIT -->
+      # more on <a href="https://github.com/nebula762814" style="color:var(--blue);text-decoration:none;">github</a>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
