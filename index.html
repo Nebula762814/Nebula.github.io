@@ -54,7 +54,7 @@ body{
 
 /* Photo */
 .photo-wrap{
-  width:110px;height:110px;
+  width:300px;height:300px;
   border:1px solid var(--border2);
   border-radius:4px;
   overflow:hidden;
@@ -210,7 +210,7 @@ body{
     <div class="photo-wrap">
       <img id="profile-img" src="photo.jpg" alt="Profile photo" style="display:none">
       <div class="photo-placeholder" id="photo-ph">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
         </svg>
         <span>add photo.jpg</span>
@@ -220,21 +220,24 @@ body{
     <div class="identity">
       <!-- ASCII art — swap for any generator output, keep the pre tag -->
       <pre class="ascii-name">
- _ __   ___| |__  _   _| | __ _
-| '_ \ / _ \ '_ \| | | | |/ _` |
-| | | |  __/ |_) | |_| | | (_| |
-|_| |_|\___|_.__/ \__,_|_|\__,_|</pre>
+███╗   ██╗███████╗██████╗ ██╗   ██╗██╗      █████╗ 
+████╗  ██║██╔════╝██╔══██╗██║   ██║██║     ██╔══██╗
+██╔██╗ ██║█████╗  ██████╔╝██║   ██║██║     ███████║
+██║╚██╗██║██╔══╝  ██╔══██╗██║   ██║██║     ██╔══██║
+██║ ╚████║███████╗██████╔╝╚██████╔╝███████╗██║  ██║
+╚═╝  ╚═══╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝
+                                                   </pre>
 
       <!-- EDIT: your name -->
-      <div class="fullname">Your Full Name</div>
+      <div class="fullname">Riddick Burke-Garrison</div>
       <!-- EDIT: your title/role -->
-      <div class="role">Robotics Programmer · Linux Systems · A/V Technician</div>
+      <div class="role">Robotics Programmer · Computer Technician · A/V Technician</div>
 
       <div class="contact-grid">
         <!-- EDIT: fill in your contact details. Remove rows you don't want. -->
         <div class="contact-row">
           <span class="c-label">email</span>
-          <a href="mailto:you@example.com">you@example.com</a>
+          <a href="mailto:riddickburke7@gmail.com.com">riddickburke7@gmail.com</a>
         </div>
         <div class="contact-row">
           <span class="c-label">github</span>
@@ -245,8 +248,8 @@ body{
           <span>Bonners Ferry, ID</span>
         </div>
         <div class="contact-row">
-          <span class="c-label">linkedin</span>
-          <a href="#" target="_blank">linkedin.com/in/yourname</a>
+          <span class="c-label">Phone Number</span>
+          <a href="#" target="_blank">986-205-3253</a>
         </div>
       </div>
     </div>
@@ -271,29 +274,24 @@ body{
       <div class="exp-card" onclick="toggleExp(this)">
         <div class="exp-header">
           <div class="exp-left">
-            <span class="exp-role">FRC Robotics Programmer</span>
+            <span class="exp-role">FRC Robotics Programmer And CAD Team</span>
             <span class="exp-org">Team 2130 Alpha</span>
           </div>
           <div class="exp-right">
-            <span class="exp-period">2024 – present</span>
+            <span class="exp-period"></span>
             <span class="exp-chevron">▾</span>
           </div>
         </div>
         <div class="exp-body">
           <div class="exp-desc">
             <!-- EDIT: full description -->
-            Core programmer on a competitive FRC robotics team. Responsible for the full software
+            Lead programmer on a competitive FRC robotics team. Responsible for the full software
             stack on the 2026 season robot including swerve drive, autonomous path planning,
             and vision-based target tracking. Worked in a six-subsystem command-based architecture
             with WPILib Java, integrated PhotonVision across dual cameras, and built autonomous
-            routines using PathPlannerLib. Also managed driver-station tooling via Elastic Dashboard.
+            routines using PathPlannerLib. Also managed driver-station tooling via Smart Dashboard.
           </div>
           <div class="exp-tags">
-            <span class="tag">WPILib Java</span>
-            <span class="tag">PathPlannerLib</span>
-            <span class="tag">PhotonVision</span>
-            <span class="tag">Swerve Drive</span>
-            <span class="tag">Command-Based</span>
           </div>
           <!-- EDIT: add images or remove this block -->
           <div class="exp-images">
@@ -306,10 +304,10 @@ body{
         <div class="exp-header">
           <div class="exp-left">
             <span class="exp-role">Audio / Visual Technician</span>
-            <span class="exp-org">Auditorium</span>
+            <span class="exp-org">Becker Auditorium</span>
           </div>
           <div class="exp-right">
-            <span class="exp-period">2023 – present</span>
+            <span class="exp-period"></span>
             <span class="exp-chevron">▾</span>
           </div>
         </div>
@@ -334,29 +332,20 @@ body{
       <div class="exp-card" onclick="toggleExp(this)">
         <div class="exp-header">
           <div class="exp-left">
-            <span class="exp-role">Linux Systems & Homelab</span>
+            <span class="exp-role">Community Electronics Repair</span>
             <span class="exp-org">Personal</span>
           </div>
           <div class="exp-right">
-            <span class="exp-period">ongoing</span>
+            <span class="exp-period"></span>
             <span class="exp-chevron">▾</span>
           </div>
         </div>
         <div class="exp-body">
           <div class="exp-desc">
             <!-- EDIT -->
-            Run a self-hosted stack on a Mac Mini including a Plex media server, FastAPI music
-            server, and custom TUI applications. Maintain a Tailscale mesh across devices.
-            Daily-drive CachyOS (Arch-based) with a custom niri Wayland compositor setup,
-            full dotfiles configuration, and Tokyo Night theming across the entire environment.
+            I have repaired many devices among members of the community including Android and Apple smartphones, Apple and Windows personal computers, and many others.
           </div>
           <div class="exp-tags">
-            <span class="tag">Linux</span>
-            <span class="tag">Python</span>
-            <span class="tag">FastAPI</span>
-            <span class="tag">Tailscale</span>
-            <span class="tag">Wayland</span>
-            <span class="tag">Self-Hosting</span>
           </div>
           <div class="exp-images">
             <!-- <img src="homelab.jpg" alt="Homelab setup"> -->
@@ -376,21 +365,17 @@ body{
       <div class="exp-card" onclick="toggleExp(this)">
         <div class="exp-header">
           <div class="exp-left">
-            <span class="exp-role">Software Development</span>
-            <span class="exp-org">Java · Python · Web</span>
+            <span class="exp-role">Electronics Repair
+            <span class="exp-org">Phone · Computer · Misc</span>
           </div>
           <div class="exp-right"><span class="exp-chevron">▾</span></div>
         </div>
         <div class="exp-body">
           <div class="exp-desc">
             <!-- EDIT -->
-            Build clean, maintainable software in Java and Python. Experience with command-based
-            robotics systems, REST APIs (FastAPI), and browser-based tools. Comfortable picking
-            up new frameworks and codebases quickly.
+           Repair and upgrade devices including smartphones, laptops, desktops, audio systems, gaming consoles. Willing to assist setting up new technology and transfer data between devices. Will work on any brand or operating system. Price: Replacement Part Cost + $20 per hour
           </div>
           <div class="exp-tags">
-            <span class="tag">Java</span><span class="tag">Python</span>
-            <span class="tag">HTML/CSS/JS</span><span class="tag">FastAPI</span>
           </div>
         </div>
       </div>
@@ -398,21 +383,16 @@ body{
       <div class="exp-card" onclick="toggleExp(this)">
         <div class="exp-header">
           <div class="exp-left">
-            <span class="exp-role">Linux & Server Setup</span>
-            <span class="exp-org">Self-hosted · Networking · Config</span>
+            <span class="exp-role">Small Scale 3D Printing</span>
           </div>
           <div class="exp-right"><span class="exp-chevron">▾</span></div>
         </div>
         <div class="exp-body">
           <div class="exp-desc">
             <!-- EDIT -->
-            Set up and maintain Linux servers, self-hosted applications, and home network
-            infrastructure. Experienced with Arch-based distros, systemd/launchd, reverse
-            proxies, and VPN mesh networking via Tailscale.
+            Will 3d print items 200mm x 200mm x 200mm or smaller. Limited to 10 items per order. Will 3d model basic items if needed. Price: $5 per item + $5 modeling fee.
           </div>
           <div class="exp-tags">
-            <span class="tag">Arch Linux</span><span class="tag">systemd</span>
-            <span class="tag">Tailscale</span><span class="tag">Networking</span>
           </div>
         </div>
       </div>
@@ -420,30 +400,7 @@ body{
       <div class="exp-card" onclick="toggleExp(this)">
         <div class="exp-header">
           <div class="exp-left">
-            <span class="exp-role">Robotics Programming</span>
-            <span class="exp-org">FRC · WPILib · Vision</span>
-          </div>
-          <div class="exp-right"><span class="exp-chevron">▾</span></div>
-        </div>
-        <div class="exp-body">
-          <div class="exp-desc">
-            <!-- EDIT -->
-            Design and implement robot software for competitive FRC teams. Skilled in
-            command-based architecture, autonomous path planning, and computer vision
-            integration for real-time target tracking.
-          </div>
-          <div class="exp-tags">
-            <span class="tag">WPILib</span><span class="tag">PathPlannerLib</span>
-            <span class="tag">PhotonVision</span><span class="tag">Autonomous</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="exp-card" onclick="toggleExp(this)">
-        <div class="exp-header">
-          <div class="exp-left">
-            <span class="exp-role">Audio / Visual Production</span>
-            <span class="exp-org">Live Events · Sound · Lighting</span>
+            <span class="exp-role">Lights And Sound Theater Technician</span>
           </div>
           <div class="exp-right"><span class="exp-chevron">▾</span></div>
         </div>
@@ -452,11 +409,9 @@ body{
             <!-- EDIT -->
             Full production support for live events: front-of-house sound, monitor mixing,
             stage lighting, and projection. Experienced with setup, operation, and teardown
-            for performances of varying scale.
+            for performances of varying scale. Must provide equipment (Mics, Sound Board, Speakers) Price: $60 Per Hour (Min 1)
           </div>
           <div class="exp-tags">
-            <span class="tag">FOH Mixing</span><span class="tag">Lighting</span>
-            <span class="tag">Projection</span><span class="tag">Production</span>
           </div>
         </div>
       </div>
